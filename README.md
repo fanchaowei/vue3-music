@@ -1,0 +1,1 @@
+使用 vite + vue3 + ts + pinia 去实现音乐app。
