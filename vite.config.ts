@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   test: {
     environment: 'happy-dom',
+    setupFiles: './vitest.setup.ts',
   },
   plugins: [vue()],
   resolve: {
