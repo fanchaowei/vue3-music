@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   test: {
     environment: 'happy-dom',
-    setupFiles: './vitest.setup.ts',
+    setupFiles: path.resolve(__dirname, './vitest.setup.ts'),
   },
   plugins: [vue()],
   resolve: {
@@ -22,5 +22,8 @@ export default defineConfig({
         `,
       },
     },
+  },
+  server: {
+    proxy: {},
   },
 })
