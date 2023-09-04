@@ -144,6 +144,7 @@ module.exports = {
     'no-extra-boolean-cast': 'warn',
     'no-case-declarations': 'warn',
     'no-async-promise-executor': 'warn',
+    'vue/script-setup-uses-vars': 'off',
   },
   globals: {
     defineProps: 'readonly',
