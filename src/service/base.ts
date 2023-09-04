@@ -64,13 +64,13 @@ export default class SetupHttp {
   }
 
   // get请求
-  public get(url: string, params: any = {}) {
+  public get(url: string, params: any = {}, debounceEnabled: number | boolean = false) {
     this.controller.abort()
     this.controller = new AbortController()
     this.signal = this.controller.signal
 
     return new Promise((resolve, reject) => {
-      this.debounce(() => {
+      const makeRequest = () => {
         this.http
           .get(url, {
             ...params,
@@ -86,13 +86,19 @@ export default class SetupHttp {
             // }
             reject(err)
           })
-      }, 300)
+      }
+
+      if (typeof debounceEnabled === 'number' || debounceEnabled === true) {
+        this.debounce(makeRequest, debounceEnabled === true ? 300 : debounceEnabled)
+      } else {
+        makeRequest()
+      }
     })
   }
 
-  public post(url: string, params: any = {}) {
+  public post(url: string, params: any = {}, throttleEnabled: number | boolean = false) {
     return new Promise((resolve, reject) => {
-      this.throttle(() => {
+      const makeRequest = () => {
         this.http
           .post(url, params)
           .then((res) => {
@@ -101,7 +107,12 @@ export default class SetupHttp {
           .catch((err) => {
             reject(err)
           })
-      }, 300)
+      }
+      if (throttleEnabled === true || typeof throttleEnabled === 'number') {
+        this.throttle(makeRequest, throttleEnabled === true ? 300 : throttleEnabled)
+      } else {
+        makeRequest()
+      }
     })
   }
 
