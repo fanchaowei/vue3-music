@@ -64,20 +64,24 @@ export default class SetupHttp {
   }
 
   // get请求
-  public get(url: string, params: any = {}, debounceEnabled: number | boolean = false) {
+  public get<T>(
+    url: string,
+    params: any = {},
+    debounceEnabled: number | boolean = false,
+  ): Promise<T> {
     this.controller.abort()
     this.controller = new AbortController()
     this.signal = this.controller.signal
 
     return new Promise((resolve, reject) => {
       const makeRequest = () => {
-        this.http
-          .get(url, {
+        return this.http
+          .get<T>(url, {
             ...params,
             abortSingal: this.signal,
           })
           .then((res) => {
-            resolve(res)
+            resolve(res as T)
           })
           .catch((err) => {
             // if (err.name === 'AbortError') {
@@ -96,13 +100,17 @@ export default class SetupHttp {
     })
   }
 
-  public post(url: string, params: any = {}, throttleEnabled: number | boolean = false) {
+  public post<T>(
+    url: string,
+    params: any = {},
+    throttleEnabled: number | boolean = false,
+  ): Promise<T> {
     return new Promise((resolve, reject) => {
       const makeRequest = () => {
-        this.http
-          .post(url, params)
+        return this.http
+          .post<T>(url, params)
           .then((res) => {
-            resolve(res)
+            resolve(res as T)
           })
           .catch((err) => {
             reject(err)

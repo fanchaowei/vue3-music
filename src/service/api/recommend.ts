@@ -1,5 +1,6 @@
 import { http } from '../http'
+import { IRecommend } from '@/types'
 
 export function fetchGetRecommend() {
-  return http.get('/api/getRecommend')
+  return http.get<IRecommend>('/api/getRecommend')
 }
