@@ -2,6 +2,8 @@
 import { defineComponent, ref } from 'vue'
 import type { Ref } from 'vue'
 import useSlider from './useSlider'
+import { ISlider } from '@/types'
+
 export default defineComponent({
   name: 'SliderComponent',
 })
@@ -9,7 +11,7 @@ export default defineComponent({
 
 <script setup lang="ts">
 const { sliders } = defineProps<{
-  sliders: { id: number; pic: string; link: string }[]
+  sliders: ISlider[]
 }>()
 
 const rootRef = ref<HTMLElement | null>(null)
