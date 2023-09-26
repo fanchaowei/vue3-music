@@ -29,7 +29,7 @@ export default function useSlider(wrapperRef: Ref<HTMLElement>) {
   })
 
   return {
-    slider,
+    slider: slider as Ref<BScroll>,
     currentPageIndex,
   }
 }
