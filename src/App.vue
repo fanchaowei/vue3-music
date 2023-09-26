@@ -12,7 +12,9 @@ import TabLayout from '@/components/layout/tab/tab.vue'
 <template>
   <HeaderLayout></HeaderLayout>
   <TabLayout></TabLayout>
-  <router-view></router-view>
+  <Suspense>
+    <router-view></router-view>
+  </Suspense>
 </template>
 
 <style scoped></style>
