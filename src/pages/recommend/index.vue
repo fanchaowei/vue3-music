@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed, onBeforeMount } from 'vue'
 import { fetchGetRecommend } from '@/service'
 import { ISlider, IRecommend, IAlbum } from '@/types'
 import Slider from '@/components/base/slider/slider.vue'
@@ -13,13 +13,20 @@ export default defineComponent({
 const sliders = ref<ISlider[]>([])
 const albums = ref<IAlbum[]>([])
 
-const res: IRecommend = await fetchGetRecommend()
-sliders.value = res.sliders
-albums.value = res.albums
+const loading = computed(() => {
+  return !sliders.value.length || !albums.value.length
+})
+
+onBeforeMount(async () => {
+  // TODO 需要解决放在 onMounted 和 onBeforeMount 里无法滚动的问题。去掉的话会影响 loading 的显示
+  const res: IRecommend = await fetchGetRecommend()
+  sliders.value = res.sliders
+  albums.value = res.albums
+})
 </script>
 
 <template>
-  <div class="recommend">
+  <div v-loading="loading" class="recommend">
     <Scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
@@ -28,12 +35,12 @@ albums.value = res.albums
           </div>
         </div>
         <div class="recommend-list">
-          <h1 class="list-title">热门歌单推荐</h1>
+          <h1 v-show="!loading" class="list-title">热门歌单推荐</h1>
           <ul>
             <li v-for="item in albums" :key="item.id" class="item">
               <div class="icon">
                 <!-- v-lazy 是图片懒加载插件给予的 -->
-                <img width="60" height="60" :src="item.pic" />
+                <img v-lazy="item.pic" width="60" height="60" />
               </div>
               <div class="text">
                 <h2 class="name">
