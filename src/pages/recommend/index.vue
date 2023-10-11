@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, onBeforeMount } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { fetchGetRecommend } from '@/service'
 import { ISlider, IRecommend, IAlbum } from '@/types'
 import Slider from '@/components/base/slider/slider.vue'
@@ -17,8 +17,9 @@ const loading = computed(() => {
   return !sliders.value.length || !albums.value.length
 })
 
-onBeforeMount(async () => {
-  // TODO 需要解决放在 onMounted 和 onBeforeMount 里无法滚动的问题。去掉的话会影响 loading 的显示
+const loadingTitle = '正在加载...'
+
+onMounted(async () => {
   const res: IRecommend = await fetchGetRecommend()
   sliders.value = res.sliders
   albums.value = res.albums
@@ -26,7 +27,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-loading="loading" class="recommend">
+  <div v-loading:[loadingTitle]="loading" class="recommend">
     <Scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
