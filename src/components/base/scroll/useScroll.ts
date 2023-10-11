@@ -1,6 +1,10 @@
 import BScroll from '@better-scroll/core'
+import ObserveDOM from '@better-scroll/observe-dom'
 import type { Ref } from 'vue'
 import { ref, onMounted, onUnmounted } from 'vue'
+
+// 配置 DOM 元素探测插件
+BScroll.use(ObserveDOM)
 
 interface Options {
   click?: boolean
