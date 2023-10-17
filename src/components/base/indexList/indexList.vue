@@ -1,14 +1,16 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Scroll from '../scroll/scroll.vue'
-import { ISingerColumn } from '@/types'
+import useFixed from './useFixed'
+import type { ISingerColumn } from '@/types'
+import type { Ref } from 'vue'
 export default defineComponent({
   name: 'IndexList',
 })
 </script>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     singersData: ISingerColumn[]
   }>(),
@@ -16,11 +18,14 @@ withDefaults(
     singersData: () => [],
   },
 )
+const groupRef = ref<HTMLElement | null>(null)
+
+const { onScroll, fixedTitle } = useFixed(groupRef as Ref<HTMLElement>, props.singersData)
 </script>
 
 <template>
-  <Scroll class="index-list">
-    <ul>
+  <Scroll class="index-list" :probe-type="3" @scroll="onScroll">
+    <ul ref="groupRef">
       <li v-for="group in singersData" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
         <ul>
@@ -31,6 +36,9 @@ withDefaults(
         </ul>
       </li>
     </ul>
+    <div class="fixed">
+      <div class="fixed-title">{{ fixedTitle }}</div>
+    </div>
   </Scroll>
 </template>
 
