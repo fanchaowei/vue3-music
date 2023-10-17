@@ -1,23 +1,25 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import type { Ref, PropType } from 'vue'
-import useScroll from './useScroll'
+import type { Ref } from 'vue'
+import type { IScrollOptions } from '@/types'
+import type { IScrollEmits } from '@/types/emits'
+import { useScroll } from './useScroll'
 export default defineComponent({
   name: 'ScrollComponent',
 })
 </script>
 
 <script setup lang="ts">
-const props = defineProps({
-  click: {
-    type: Boolean as PropType<boolean>,
-    default: true,
-  },
+const props = withDefaults(defineProps<Partial<IScrollOptions>>(), {
+  click: true,
+  probeType: 0,
 })
+
+const emits = defineEmits<IScrollEmits>()
 
 const rootRef = ref<HTMLElement | null>(null)
 
-useScroll(rootRef as Ref<HTMLElement>, props)
+useScroll(rootRef as Ref<HTMLElement>, props, emits)
 </script>
 
 <template>
@@ -26,4 +28,4 @@ useScroll(rootRef as Ref<HTMLElement>, props)
   </div>
 </template>
 
-<style scoped lang=""></style>
+<style scoped lang="scss"></style>
