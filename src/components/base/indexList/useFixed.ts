@@ -1,39 +1,30 @@
-import { ref, watch, nextTick, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import type { ISingerColumn } from '@/types'
 import type { Ref } from 'vue'
 
-export default function useFixed(groupRef: Ref<HTMLElement>, singersData: ISingerColumn[]) {
-  const listHeights = ref<number[]>([])
+export default function useFixed(
+  listHeights: Ref<number[]>,
+  singersData: Readonly<Ref<ISingerColumn[]>>,
+) {
   const scrollY = ref<number>(0)
   const currentIndex = ref<number>(0)
+  const distance = ref<number>(0)
+  const TITLE_HEIGHT = 30
 
-  const fixedTitle = computed(() => {
-    return singersData[currentIndex.value]?.title
+  const fixedStyle = computed(() => {
+    const diff =
+      distance.value > 0 && distance.value < TITLE_HEIGHT ? distance.value - TITLE_HEIGHT : 0
+    return {
+      transform: `translate3d(0, ${diff}px, 0)`,
+    }
   })
 
-  watch(
-    () => singersData,
-    async () => {
-      await nextTick()
-      calculate()
-    },
-  )
-
-  const calculate = () => {
-    if (!groupRef.value) {
-      return
+  const fixedTitle = computed(() => {
+    if (scrollY.value < 0) {
+      return ''
     }
-    const listHeightsVal = listHeights.value
-    listHeightsVal.length = 0
-    let length = 0
-    const childList = groupRef.value.children
-
-    listHeightsVal.push(length)
-    for (let i = 0; i < childList.length; i++) {
-      length += childList[i].clientHeight
-      listHeightsVal.push(length)
-    }
-  }
+    return singersData.value[currentIndex.value]?.title
+  })
 
   watch(scrollY, (newY: number) => {
     const listHeightsVal = listHeights.value
@@ -42,6 +33,8 @@ export default function useFixed(groupRef: Ref<HTMLElement>, singersData: ISinge
       const heightBottom = listHeightsVal[i + 1]
       if (newY >= heightTop && newY <= heightBottom) {
         currentIndex.value = i
+        distance.value = heightBottom - newY
+        return
       }
     }
   })
@@ -51,8 +44,9 @@ export default function useFixed(groupRef: Ref<HTMLElement>, singersData: ISinge
   }
 
   return {
-    groupRef,
     onScroll,
     fixedTitle,
+    currentIndex,
+    fixedStyle,
   }
 }

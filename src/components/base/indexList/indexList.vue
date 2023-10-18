@@ -1,7 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, toRefs } from 'vue'
 import Scroll from '../scroll/scroll.vue'
 import useFixed from './useFixed'
+import useListHeight from './useListHeight'
+
 import type { ISingerColumn } from '@/types'
 import type { Ref } from 'vue'
 export default defineComponent({
@@ -18,9 +20,13 @@ const props = withDefaults(
     singersData: () => [],
   },
 )
+const { singersData } = toRefs(props)
+
 const groupRef = ref<HTMLElement | null>(null)
 
-const { onScroll, fixedTitle } = useFixed(groupRef as Ref<HTMLElement>, props.singersData)
+const { listHeights } = useListHeight(groupRef as Ref<HTMLElement>, singersData)
+
+const { onScroll, fixedTitle, fixedStyle } = useFixed(listHeights, singersData)
 </script>
 
 <template>
@@ -36,7 +42,7 @@ const { onScroll, fixedTitle } = useFixed(groupRef as Ref<HTMLElement>, props.si
         </ul>
       </li>
     </ul>
-    <div class="fixed">
+    <div v-show="fixedTitle" class="fixed" :style="fixedStyle">
       <div class="fixed-title">{{ fixedTitle }}</div>
     </div>
   </Scroll>
