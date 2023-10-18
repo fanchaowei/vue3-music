@@ -20,13 +20,13 @@ export function useScroll(
       observeDOM: true,
       ...options,
     })
-  })
 
-  if (options.probeType && options.probeType > 0) {
-    scroll.value?.on('scroll', (pos: { x: number; y: number }) => {
-      emits('scroll', pos)
-    })
-  }
+    if (options.probeType && options.probeType > 0) {
+      scroll.value?.on('scroll', (pos: { x: number; y: number }) => {
+        emits('scroll', { y: pos.y })
+      })
+    }
+  })
 
   onUnmounted(() => {
     scroll.value?.destroy()
