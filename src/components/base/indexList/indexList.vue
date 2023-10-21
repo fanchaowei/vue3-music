@@ -3,6 +3,7 @@ import { defineComponent, ref, toRefs } from 'vue'
 import Scroll from '../scroll/scroll.vue'
 import useFixed from './useFixed'
 import useListHeight from './useListHeight'
+import useShortcut from './useShortcut'
 
 import type { ISingerColumn } from '@/types'
 import type { Ref } from 'vue'
@@ -26,7 +27,9 @@ const groupRef = ref<HTMLElement | null>(null)
 
 const { listHeights } = useListHeight(groupRef as Ref<HTMLElement>, singersData)
 
-const { onScroll, fixedTitle, fixedStyle } = useFixed(listHeights, singersData)
+const { onScroll, fixedTitle, fixedStyle, currentIndex } = useFixed(listHeights, singersData)
+
+const { shortcutList } = useShortcut(singersData)
 </script>
 
 <template>
@@ -44,6 +47,18 @@ const { onScroll, fixedTitle, fixedStyle } = useFixed(listHeights, singersData)
     </ul>
     <div v-show="fixedTitle" class="fixed" :style="fixedStyle">
       <div class="fixed-title">{{ fixedTitle }}</div>
+    </div>
+    <div class="shortcut">
+      <ul>
+        <li
+          v-for="(item, index) in shortcutList"
+          :key="item"
+          class="item"
+          :class="{ current: currentIndex === index }"
+        >
+          {{ item }}
+        </li>
+      </ul>
     </div>
   </Scroll>
 </template>
